@@ -385,18 +385,18 @@ public class Cafe {
          System.out.println("MENU");
          System.out.println("----");
          System.out.println("1. View Menu Items");
-	 System.out.println("2. Modify Menu Items");
+	      System.out.println("2. Modify Menu Items");
          System.out.println(".........................");
          System.out.println("9. < EXIT");
          String Manageruser = null;
-	 switch (readChoice()){ 
-         //TODO For managers only
-         //System.out.println("2. Modify Menu Items");
-         case 1: ItemMenu(esql); break;
-	 case 2: Manageruser = ManagerLogin(esql); break;
-         case 9: cafemenu = false; break;
-	 default: System.out.println("Unrecognized choice!"); break;
-     	 }//end switch
+	      switch (readChoice()){ 
+            //TODO For managers only
+            //System.out.println("2. Modify Menu Items");
+            case 1: ItemMenu(esql); break;
+            case 2: Manageruser = ManagerLogin(esql); break;
+            case 9: cafemenu = false; break;
+            default: System.out.println("Unrecognized choice!"); break;
+     	   }//end switch
 	
 	if(Manageruser != null){
 		boolean modifymenu = true;
@@ -424,7 +424,8 @@ public class Cafe {
                      break; 
 				case 2:  System.out.print("\tEnter name of the Item you would like to delete: ");
                      String itemName = in.readLine();
-                     String query2 = string.format("DELETE FROM MENU WHERE itemName = '%s'", itemName);
+                     String query2 = String.format("DELETE FROM MENU WHERE itemName = '%s'", itemName);
+                     esql.executeUpdate(query2);
                      break;
 				case 3:  UpdateItem(esql); break;
             case 9:  modifymenu = false; break;
@@ -511,7 +512,56 @@ public static String ManagerLogin(Cafe esql){
 		System.err.println (e.getMessage());
 		return null;
 	}
-}
+}//end ManagerLogin function
+
+public static void UpdateItem(Cafe esql){
+   try{
+      boolean updatemenu = true;
+      while(updatemenu){
+         System.out.print("\tEnter the name of the Item you would like to update: ");
+         String itemName = in.readLine();
+         System.out.println("Which attribute would you like to change?");
+         System.out.println("---------");
+         System.out.println("1. Item Name");
+         System.out.println("2. Type");
+         System.out.println("3. Price");
+         System.out.println("4. Description");
+         System.out.println("5. Image URL");
+         System.out.println(".........................");
+         System.out.println("9. < Exit");
+
+         switch(readChoice()){
+            case 1: System.out.print("\tEnter new Item Name: ");
+                    String newitemName = in.readLine();
+                    String query1 = String.format("UPDATE MENU SET itemName = '%s' WHERE itemName = '%s'", newitemName, itemName);
+                    esql.executeUpdate(query1);
+                    break;
+            case 2: System.out.print("\tEnter new Item type: ");
+                    String newtype = in.readLine();
+                    String query2 = String.format("UPDATE MENU SET type = '%s' WHERE itemName = '%s'", newtype, itemName);
+                    esql.executeUpdate(query2);
+                    break;
+            case 3: System.out.print("\tEnter new Item price: ");
+                    String newprice = in.readLine();
+                    String query3 = String.format("UPDATE MENU SET price = '%s' WHERE itemName = '%s'", newprice, itemName);
+                    esql.executeUpdate(query3);
+                    break;
+            case 4: System.out.print("\tEnter new Item description: ");
+                    String newdes = in.readLine();
+                    String query4 = String.format("UPDATE MENU SET description = '%s' WHERE itemName = '%s'", newdes, itemName);
+                    esql.executeUpdate(query4);
+                    break;
+            case 5: System.out.print("\tEnter new Item imageURL: ");
+                    String newURL = in.readLine();
+                    String query5 = String.format("UPDATE MENU SET type = '%s' WHERE itemName = '%s'", newURL, itemName);
+                    esql.executeUpdate(query5);
+                    break;
+            case 9: updatemenu = false; break;
+            default: System.out.println("Unrecognized choice!"); break;
+         }//end switch
+      }//end while
+   }//end try
+}//end UpdateItem function
 
   public static void UpdateProfile(Cafe esql){
   try {
