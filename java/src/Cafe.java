@@ -404,15 +404,34 @@ public class Cafe {
 			System.out.println("1. Add Items");
 			System.out.println("2. Delete Items");
 			System.out.println("3. Update Items");
+         System.out.println(".........................");
+         System.out.println("9. < EXIT");
 			
 			switch(readChoice()){
-				//TODO case 1:
-				//TODO case 2:
-				//TODO case 3;
+				case 1:  System.out.print("\tEnter new Item's Name: ");
+                     String itemName = in.readLine();
+                     System.out.print("\tEnter new Item's Type: ");
+                     String type = in.readLine();
+                     System.out.print("\tEnter new Item's Price: ");
+                     String price = in.readLine();
+                     System.out.print("\tEnter new Item's Description: ");
+                     String description = in.readLine();
+                     System.out.print("\tEnter new Item's ImageURL: ");
+                     String imageURL = in.readLine();
+                     String query1 = String.format("INSERT INTO MENU (itemName, type, price, description, imageURL) VALUES ('%s', '%s', '%s', '%s', '%s')", itemName, type, price, description, imageURL);
+                     esql.executeUpdate(query1);
+                     System.out.println ("Item successfully added!");
+                     break; 
+				case 2:  System.out.print("\tEnter name of the Item you would like to delete: ");
+                     String itemName = in.readLine();
+                     String query2 = string.format("DELETE FROM MENU WHERE itemName = '%s'", itemName);
+                     break;
+				case 3:  UpdateItem(esql); break;
+            case 9:  modifymenu = false; break;
 				default: System.out.println("Unrecognized choice!"); break;
-			}
-		}
-	}
+			}//end switch
+		}//end if
+	}//end while
 
       }//end while
    }catch(Exception e){
