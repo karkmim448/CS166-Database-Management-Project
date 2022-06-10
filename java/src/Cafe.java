@@ -271,15 +271,13 @@ public class Cafe {
                 System.out.println("2. Update Profile");
                 System.out.println("3. Place a Order");
                 System.out.println("4. Update a Order");
-		System.out.println("5. Browse Order History");
                 System.out.println(".........................");
                 System.out.println("9. Log out");
                 switch (readChoice()){
                    case 1: Menu(esql); break;
                    case 2: UpdateProfile(esql); break;
-                   case 3: PlaceOrder(esql); break;
+                   case 3: PlaceOrder(esql, authorisedUser); break;
                    case 4: UpdateOrder(esql); break;
-		   case 5: BrowseOrder(esql); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
                 }
@@ -664,7 +662,30 @@ public static void UpdateItem(Cafe esql){
          }
   }
 
-  public static void PlaceOrder(Cafe esql){}
+  public static void PlaceOrder(Cafe esql, String login){
+  	try{
+       String orderid = "currval('orderid_seq')"; //get current value of order id sequence
+       String paid = "false";
+       String time = "now()"; //current time timestamp
+       String total = "0";
+
+      String query1 = String.format("INSERT INTO orders (login, paid, timeStampRecieved, total) VALUES ('%s','%s','%s','%s')", login, paid, time, total);
+      esql.executeUpdate(query1);
+
+      System.out.print("\tEnter item name you want to order: ");
+      String item = in.readLine();
+      String query2 = String.format("UPDATE Orders SET total = Menu.price FROM Menu WHERE orderid = %s AND Menu.itemName = '%s'", orderid, item);
+      esql.executeUpdate(query2);
+
+      System.out.println ("Order successfully created!");
+
+      String query3 = String.format("SELECT * FROM Orders WHERE login = '%s'", login);
+      int rowCount = esql.executeQueryAndPrintResult(query3);
+      System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+  }
 
   public static void UpdateOrder(Cafe esql){
      try{
@@ -755,37 +776,6 @@ public static void UpdateItem(Cafe esql){
          System.err.println (e.getMessage ());
          }//end try and catch
   }//end UpdateOrder function
-
-   public static void BrowseOrder(Cafe esql){
-
-      try{
-            System.out.println("Please login again.");
-            System.out.print("\tEnter user login: ");
-            String login = in.readLine();
-            System.out.print("\tEnter user password: ");
-            String password = in.readLine();
-
-            String query = String.format("SELECT * FROM USERS WHERE login = '%s' AND password = '%s' AND type = 'Customer'", login, password);
-            int customer = esql.executeQuery(query);
-
-            //If they are a customer, print last 5 orders, if manager/employee, show all unpaid orders within 24 hours
-            if(customer > 0){
-               System.out.println("Hello Customer. Here are your last 5 orders.");
-               String query1 = String.format("SELECT * FROM ORDERS WHERE login = '%s' ORDER BY orderid DESC LIMIT 5", login);
-               esql.executeQueryAndPrintResult(query1);
-            }//end if
-            else{
-               System.out.println("Here are the unpaid orders made in the last 24 hours.");
-               String query2 = String.format("SELECT * FROM ORDERS WHERE paid = 'false' AND timeStampRecieved >= now() - interval '1 day'");
-               esql.executeQueryAndPrintResult(query2);
-            }//end else
-
-            System.out.println("Sending user back to Main Menu...");
-
-      }catch(Exception e){
-         System.err.println (e.getMessage ());
-         }//end try and catch
-   }//end BrowseOrder function
 
 }//end Cafe
 
