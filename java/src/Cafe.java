@@ -409,16 +409,16 @@ public class Cafe {
 			
 			switch(readChoice()){
 				case 1:  System.out.print("\tEnter new Item's Name: ");
-                     String itemName = in.readLine();
+                     String itemName1 = in.readLine();
                      System.out.print("\tEnter new Item's Type: ");
-                     String type = in.readLine();
+                     String type1 = in.readLine();
                      System.out.print("\tEnter new Item's Price: ");
-                     String price = in.readLine();
+                     String price1 = in.readLine();
                      System.out.print("\tEnter new Item's Description: ");
-                     String description = in.readLine();
+                     String description1 = in.readLine();
                      System.out.print("\tEnter new Item's ImageURL: ");
-                     String imageURL = in.readLine();
-                     String query1 = String.format("INSERT INTO MENU (itemName, type, price, description, imageURL) VALUES ('%s', '%s', '%s', '%s', '%s')", itemName, type, price, description, imageURL);
+                     String imageURL1 = in.readLine();
+                     String query1 = String.format("INSERT INTO MENU (itemName, type, price, description, imageURL) VALUES ('%s', '%s', '%s', '%s', '%s')", itemName1, type1, price1, description1, imageURL1);
                      esql.executeUpdate(query1);
                      System.out.println ("Item successfully added!");
                      break; 
@@ -426,6 +426,7 @@ public class Cafe {
                      String itemName = in.readLine();
                      String query2 = String.format("DELETE FROM MENU WHERE itemName = '%s'", itemName);
                      esql.executeUpdate(query2);
+                     System.out.println ("Item successfully deleted!");
                      break;
 				case 3:  UpdateItem(esql); break;
             case 9:  modifymenu = false; break;
@@ -503,13 +504,15 @@ public static String ManagerLogin(Cafe esql){
          	String query = String.format("SELECT * FROM USERS WHERE login = '%s' AND password = '%s' AND type = 'Manager'", login, password);
 		
 		int userNum = esql.executeQuery(query);
-		if(userNum > 0)
+		if(userNum > 0){
 			return login;
-				System.out.println("You are not a manager.");
-				return null;
-							
+		}
+		else{		
+			System.out.println("You are not a manager.");
+			return null;
+		}					
 	}catch(Exception e){
-		System.err.println (e.getMessage());
+		System.err.println (e.getMessage ());
 		return null;
 	}
 }//end ManagerLogin function
@@ -560,7 +563,9 @@ public static void UpdateItem(Cafe esql){
             default: System.out.println("Unrecognized choice!"); break;
          }//end switch
       }//end while
-   }//end try
+   }catch(Exception e){
+         System.err.println (e.getMessage ());
+         }//end try and catch
 }//end UpdateItem function
 
   public static void UpdateProfile(Cafe esql){
