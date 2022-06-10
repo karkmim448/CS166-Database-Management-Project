@@ -795,7 +795,7 @@ public static void UpdateItem(Cafe esql){
             }//end if
             else{
                System.out.println("Here are the unpaid orders made in the last 24 hours.");
-               String query2 = String.format("SELECT * FROM ORDERS WHERE paid = false AND timeStampRecieved > now() - interval '24 hours'");
+               String query2 = String.format("SELECT * FROM ORDERS WHERE paid = 'false' AND timeStampRecieved > now() - interval '24 hours'");
                esql.executeQueryAndPrintResult(query2);
             }//end else
 
