@@ -276,7 +276,7 @@ public class Cafe {
                 switch (readChoice()){
                    case 1: Menu(esql); break;
                    case 2: UpdateProfile(esql); break;
-                   case 3: PlaceOrder(esql); break;
+                   case 3: PlaceOrder(esql, authorisedUser); break;
                    case 4: UpdateOrder(esql); break;
                    case 9: usermenu = false; break;
                    default : System.out.println("Unrecognized choice!"); break;
@@ -662,7 +662,30 @@ public static void UpdateItem(Cafe esql){
          }
   }
 
-  public static void PlaceOrder(Cafe esql){}
+  public static void PlaceOrder(Cafe esql, String login){
+  	try{
+       String orderid = "currval('orderid_seq')"; //get current value of order id sequence
+       String paid = "false";
+       String time = "now()"; //current time timestamp
+       String total = "0";
+
+      String query1 = String.format("INSERT INTO orders (login, paid, timeStampRecieved, total) VALUES ('%s','%s','%s','%s')", login, paid, time, total);
+      esql.executeUpdate(query1);
+
+      System.out.print("\tEnter item name you want to order: ");
+      String item = in.readLine();
+      String query2 = String.format("UPDATE Orders SET total = Menu.price FROM Menu WHERE orderid = %s AND Menu.itemName = '%s'", orderid, item);
+      esql.executeUpdate(query2);
+
+      System.out.println ("Order successfully created!");
+
+      String query3 = String.format("SELECT * FROM Orders WHERE login = '%s'", login);
+      int rowCount = esql.executeQueryAndPrintResult(query3);
+      System.out.println ("total row(s): " + rowCount);
+      }catch(Exception e){
+         System.err.println (e.getMessage());
+      }
+  }
 
   public static void UpdateOrder(Cafe esql){
      try{
