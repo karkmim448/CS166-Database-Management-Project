@@ -729,7 +729,7 @@ public static void UpdateItem(Cafe esql){
                      case 2: System.out.print("\tEnter new Login: ");
                            String newlogin = in.readLine();
                            String query3 = String.format("UPDATE ORDERS SET login = '%s' orderid = '%s'" , newlogin, inputorderid);
-                           esql.executeUpdate(query2);
+                           esql.executeUpdate(query3);
                            System.out.println ("Login successfully updated!");
                            break;
                      case 3: System.out.println ("Please verify that you are a manager or an employee.");
