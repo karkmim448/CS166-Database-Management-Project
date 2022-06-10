@@ -425,8 +425,8 @@ public class Cafe {
                      System.out.println ("Item successfully added!");
                      break; 
 				case 2:  System.out.print("\tEnter name of the Item you would like to delete: ");
-                     String itemName = in.readLine();
-                     String query2 = String.format("DELETE FROM MENU WHERE itemName = '%s'", itemName);
+                     String itemname = in.readLine();
+                     String query2 = String.format("DELETE FROM MENU WHERE itemName = '%s'", itemname);
                      esql.executeUpdate(query2);
                      System.out.println ("Item successfully deleted!");
                      break;
@@ -527,7 +527,7 @@ public static void UpdateItem(Cafe esql){
 
          //to check if the item that is being searched for exists
          String query0 = String.format("SELECT * FROM MENU WHERE itemName = '%s'", itemName);
-         int itemExists = esql.executequery(query0);
+         int itemExists = esql.executeQuery(query0);
          if(itemExists < 1){
             System.out.println("This item doesn't exist");
             break;
@@ -578,7 +578,9 @@ public static void UpdateItem(Cafe esql){
             default: System.out.println("Unrecognized choice!"); break;
          }//end switch
       }//end while
-   }//end try
+   }catch(Exception e){
+         System.err.println (e.getMessage ());
+         }//end try and catch
 }//end UpdateItem function
 
   public static void UpdateProfile(Cafe esql){
@@ -695,7 +697,7 @@ public static void UpdateItem(Cafe esql){
 
            //to check if the item that is being searched for exists
          String query0 = String.format("SELECT * FROM ORDERS WHERE orderid = '%s'", inputorderid);
-         int orderExists = esql.executequery(query0);
+         int orderExists = esql.executeQuery(query0);
          if(orderExists < 1){
             System.out.println("This OrderID doesn't exist");
             break;
@@ -776,9 +778,6 @@ public static void UpdateItem(Cafe esql){
    public static void BrowseOrder(Cafe esql){
 
       try{
-         boolean browse = true;
-
-         while(browse){
             System.out.println("Please login again.");
             System.out.print("\tEnter user login: ");
             String login = in.readLine();
@@ -800,16 +799,7 @@ public static void UpdateItem(Cafe esql){
                esql.executeQueryAndPrintResult(query2);
             }//end else
 
-            System.out.print("\tContinue browsing? (y/n) ");
-            String continue = in.readLine();
-
-            if (continue == "y"){
-               break;
-            }//end if
-            else if(continue == "n"){
-               browse = false;
-            }//end else if
-         }//end while
+            System.out.println("Sending user back to main menu...");
 
       }catch(Exception e){
          System.err.println (e.getMessage ());
