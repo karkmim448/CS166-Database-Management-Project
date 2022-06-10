@@ -492,6 +492,7 @@ public static void EnterItemType(Cafe esql){
    }   
   }
 
+//Wasn't sure how to implement this without simply inputting user login and password again
 public static String ManagerLogin(Cafe esql){
 	try{
 		System.out.println("FOR MANAGERS ONLY");
@@ -523,6 +524,15 @@ public static void UpdateItem(Cafe esql){
       while(updatemenu){
          System.out.print("\tEnter the name of the Item you would like to update: ");
          String itemName = in.readLine();
+
+	 //to check if the item that is being searched for exists
+         String query0 = String.format("SELECT * FROM MENU WHERE itemName = '%s'", itemName);
+         int itemExists = esql.executeQuery(query0);
+         if(itemExists < 1){
+            System.out.println("This item doesn't exist");
+            break;
+         }//end if
+
          System.out.println("Which attribute would you like to change?");
          System.out.println("---------");
          System.out.println("1. Item Name");
@@ -538,26 +548,31 @@ public static void UpdateItem(Cafe esql){
                     String newitemName = in.readLine();
                     String query1 = String.format("UPDATE MENU SET itemName = '%s' WHERE itemName = '%s'", newitemName, itemName);
                     esql.executeUpdate(query1);
+		    System.out.println (itemName + " successfully updated to: " + newitemName);
                     break;
             case 2: System.out.print("\tEnter new Item type: ");
                     String newtype = in.readLine();
                     String query2 = String.format("UPDATE MENU SET type = '%s' WHERE itemName = '%s'", newtype, itemName);
                     esql.executeUpdate(query2);
+		    System.out.println (itemName + "'s type successfully updated to: " + newtype);
                     break;
             case 3: System.out.print("\tEnter new Item price: ");
                     String newprice = in.readLine();
                     String query3 = String.format("UPDATE MENU SET price = '%s' WHERE itemName = '%s'", newprice, itemName);
                     esql.executeUpdate(query3);
+		    System.out.println (itemName + "'s price successfully updated to: " + newprice);
                     break;
             case 4: System.out.print("\tEnter new Item description: ");
                     String newdes = in.readLine();
                     String query4 = String.format("UPDATE MENU SET description = '%s' WHERE itemName = '%s'", newdes, itemName);
                     esql.executeUpdate(query4);
+		    System.out.println (itemName + "'s description successfully updated to: " + newdes);
                     break;
             case 5: System.out.print("\tEnter new Item imageURL: ");
                     String newURL = in.readLine();
                     String query5 = String.format("UPDATE MENU SET type = '%s' WHERE itemName = '%s'", newURL, itemName);
                     esql.executeUpdate(query5);
+		    System.out.println (itemName + "'s imageURL successfully updated to: " + newURL);
                     break;
             case 9: updatemenu = false; break;
             default: System.out.println("Unrecognized choice!"); break;
@@ -649,7 +664,95 @@ public static void UpdateItem(Cafe esql){
 
   public static void PlaceOrder(Cafe esql){}
 
-  public static void UpdateOrder(Cafe esql){}
+  public static void UpdateOrder(Cafe esql){
+     try{
+        boolean updateorder = true;
+
+        while(updateorder){
+           System.out.print("\tEnter the ID of the order you would like to update: ");
+           String inputorderid = in.readLine();
+
+           //to check if the item that is being searched for exists
+         String query0 = String.format("SELECT * FROM ORDERS WHERE orderid = '%s'", inputorderid);
+         int orderExists = esql.executeQuery(query0);
+         if(orderExists < 1){
+            System.out.println("This OrderID doesn't exist");
+            break;
+         }//end if
+
+
+         //now checking if the order is not paid yet
+            String query1 = String.format("SELECT * FROM ORDERS WHERE orderid = '%s' AND paid = 'false'", inputorderid);
+            int notpaid = esql.executeQuery(query1);
+            if (notpaid > 0){
+               while(updateorder){
+                  System.out.println("What would you like to update?");
+                  System.out.println("------------------------------");
+                  System.out.println("1. OrderID");
+                  System.out.println("2. Login");
+                  System.out.println("3. Paid (FOR MANAGERS/EMPLOYEES ONLY)");
+                  System.out.println("4. Timestamp Received");
+                  System.out.println("5. Total");
+                  System.out.println(".........................");
+                  System.out.println("9. < Exit");
+
+                  switch (readChoice()){
+                     case 1: System.out.print("\tEnter new OrderID: ");
+                           String neworderid = in.readLine();
+                           String query2 = String.format("UPDATE ORDERS SET orderid = '%s' orderid = '%s'" , neworderid, inputorderid);
+                           esql.executeUpdate(query2);
+                           System.out.println ("OrderID successfully updated!");
+                           break;
+                     case 2: System.out.print("\tEnter new Login: ");
+                           String newlogin = in.readLine();
+                           String query3 = String.format("UPDATE ORDERS SET login = '%s' orderid = '%s'" , newlogin, inputorderid);
+                           esql.executeUpdate(query3);
+                           System.out.println ("Login successfully updated!");
+                           break;
+                     case 3: System.out.println ("Please verify that you are a manager or an employee.");
+                           System.out.print("\tEnter user login: ");
+                           String login = in.readLine();
+                           System.out.print("\tEnter user password: ");
+                           String password = in.readLine();
+                           String query4 = String.format("SELECT * FROM USERS WHERE login = '%s' AND password = '%s' AND type = 'Customer'", login, password);
+                           int cus = esql.executeQuery(query4);
+                           if (cus > 0){
+                              System.out.println("You are not a manager or an employee.");
+                              break;
+                           }//end if
+                           else{
+                              String query5 = String.format("UPDATE ORDERS SET paid = true WHERE orderid = '%s'", inputorderid);
+                              esql.executeQuery(query5);
+                              System.out.println("Updated order to paid!");
+                              break;
+                           }//end else
+                     case 4: System.out.print("\tEnter new Timestamp: ");
+                           String newtimestamp = in.readLine();
+                           String query6 = String.format("UPDATE ORDERS SET timeStampRecieved = '%s' orderid = '%s'" , newtimestamp, inputorderid);
+                           esql.executeUpdate(query6);
+                           System.out.println ("Timestamp successfully updated!");
+                           break;
+                     case 5: System.out.print("\tEnter new Total: ");
+                           String newtotal = in.readLine();
+                           String query7 = String.format("UPDATE ORDERS SET total = '%s' orderid = '%s'" , newtotal, inputorderid);
+                           esql.executeUpdate(query7);
+                           System.out.println ("Total successfully updated!");
+                           break;
+                     case 9: updateorder = false; break;
+                     default: System.out.println("Unrecognized choice!"); break;
+                  }//end switch
+               }//end while
+               
+            }//end if
+	    else{
+		System.out.println("This order is already paid.");
+		break;
+	    }//end else
+        }//end while
+     }catch(Exception e){
+         System.err.println (e.getMessage ());
+         }//end try and catch
+  }//end UpdateOrder function
 
 }//end Cafe
 
