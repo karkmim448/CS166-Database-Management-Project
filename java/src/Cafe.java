@@ -277,7 +277,7 @@ public class Cafe {
                 switch (readChoice()){
                    case 1: Menu(esql); break;
                    case 2: UpdateProfile(esql); break;
-                   case 3: PlaceOrder(esql); break;
+                   case 3: PlaceOrder(esql, authorisedUser); break;
                    case 4: UpdateOrder(esql); break;
                    case 5: BrowseOrder(esql); break;
                    case 9: usermenu = false; break;
